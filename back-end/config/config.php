@@ -3,11 +3,7 @@
 function connectionBD(){
 
     $host = "mysql-clubbasketbackend.alwaysdata.net";
-<<<<<<< HEAD
-    $dbname = "clubbasketbasket_bd";
-=======
     $dbname = "clubbasketbackend_bd";
->>>>>>> origin/main
     $username = "403724";
     $password = "Agaboubou65$";
 
