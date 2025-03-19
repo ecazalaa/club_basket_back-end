@@ -19,11 +19,11 @@ switch($method) {
         $critere = null;
         $motcle = null;
 
-        if (isset($_POST['cle']) && isset($_POST['critere'])) {
-            $motcle = $_POST['cle'];
-            $critere = $_POST['critere'];
+        if (isset($_GET['cle']) && isset($_GET['critere'])) {
+            $motcle = $_GET['cle'];
+            $critere = $_GET['critere'];
             $recherche = new RechercheJoueur( $critere,$motcle);
-            $joueurs=$recherche->executer();
+            $joueur=$recherche->executer();
             deliver_response(200, "Joueur trouvé", $joueur);
         }
 
@@ -77,10 +77,20 @@ switch($method) {
 
     case 'DELETE':
         if(isset($_GET['licence'])) {
-            // Utiliser SupprimerJoueur.php
-            $supprimer = new SupprimerJoueur();
-            $result = $supprimer->executer($_GET['licence']);
-            deliver_response(200, "Joueur supprimé avec succès", $result);
+            $licence = $_GET['licence'];
+            
+            // Vérifier si le joueur existe
+            $recherche = new RechercheJoueur('licence', $licence);
+            $joueur = $recherche->executer();
+            
+            if(empty($joueur)) {
+                deliver_response(404, "Joueur non trouvé", null);
+            } else {
+                // Supprimer le joueur
+                $supprimer = new SupprimerJoueur();
+                $result = $supprimer->executer($licence);
+                deliver_response(200, "Joueur supprimé avec succès", $result);
+            }
         }
         break;
 
