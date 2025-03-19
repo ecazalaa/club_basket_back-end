@@ -6,68 +6,66 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 require_once '../modele/Joueur.php';
 require_once '../modele/JoueurDAO.php';
+require_once '../config/config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
-$joueurDAO = new JoueurDAO();
+$pdo = connectionBD();
+$joueurDAO = new JoueurDAO($pdo);
 
 switch($method) {
     case 'GET':
-        if(isset($_GET['id'])) {
-            // Équivalent à RechercheJoueur.php
-            $joueur = $joueurDAO->rechercheJoueur($_GET['id']);
+        if(isset($_GET['licence'])) {
+            // Utiliser la méthode select pour obtenir un joueur spécifique
+            $joueur = $joueurDAO->select('licence', $_GET['licence']);
             echo json_encode($joueur);
         } else {
-            // Équivalent à ObtenirTousLesJoueurs.php
-            $joueurs = $joueurDAO->obtenirTousLesJoueurs();
+            // Utiliser la méthode selectAll pour obtenir tous les joueurs
+            $joueurs = $joueurDAO->selectAll();
             echo json_encode($joueurs);
         }
         break;
 
     case 'POST':
-        // Équivalent à CreerJoueur.php
+        // Créer un nouveau joueur
         $data = json_decode(file_get_contents('php://input'), true);
         $joueur = new Joueur(
-            null,
             $data['nom'],
             $data['prenom'],
-            $data['dateNaissance'],
+            $data['date_naissance'],
             $data['taille'],
             $data['poids'],
-            $data['poste'],
-            $data['statut']
+            $data['licence']
         );
-        $result = $joueurDAO->creerJoueur($joueur);
+        $result = $joueurDAO->insert($joueur);
         echo json_encode(['success' => $result]);
         break;
 
     case 'PUT':
-        if(isset($_GET['id'])) {
+        if(isset($_GET['licence'])) {
             $data = json_decode(file_get_contents('php://input'), true);
             if(isset($data['statut'])) {
-                // Équivalent à ModifierStatutJoueur.php
-                $result = $joueurDAO->modifierStatutJoueur($_GET['id'], $data['statut']);
+                // Mettre à jour le statut du joueur
+                $result = $joueurDAO->udpateSatut($_GET['licence'], $data['statut']);
             } else {
-                // Équivalent à ModifieJoueur.php
+                // Mettre à jour les informations du joueur
                 $joueur = new Joueur(
-                    $_GET['id'],
                     $data['nom'],
                     $data['prenom'],
-                    $data['dateNaissance'],
+                    $data['date_naissance'],
                     $data['taille'],
                     $data['poids'],
-                    $data['poste'],
-                    $data['statut']
+                    $_GET['licence']
                 );
-                $result = $joueurDAO->modifierJoueur($joueur);
+                $result = $joueurDAO->update($joueur);
             }
             echo json_encode(['success' => $result]);
         }
         break;
 
     case 'DELETE':
-        // Équivalent à SupprimerJoueur.php
-        if(isset($_GET['id'])) {
-            $result = $joueurDAO->supprimerJoueur($_GET['id']);
+        // Supprimer un joueur
+        if(isset($_GET['licence'])) {
+            $result = $joueurDAO->delete($_GET['licence']);
             echo json_encode(['success' => $result]);
         }
         break;
