@@ -4,31 +4,41 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 
-require_once '../modele/Joueur.php';
-require_once '../modele/JoueurDAO.php';
-require_once '../config/config.php';
+require_once '../endpoint/response.php';
+require_once '../controleur/ObtenirTousLesJoueurs.php';
+require_once '../controleur/RechercheJoueur.php';
+require_once '../controleur/CreerJoueur.php';
+require_once '../controleur/ModifierStatutJoueur.php';
+require_once '../controleur/ModifieJoueur.php';
+require_once '../controleur/SupprimerJoueur.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
-$pdo = connectionBD();
-$joueurDAO = new JoueurDAO($pdo);
 
 switch($method) {
     case 'GET':
-        if(isset($_GET['licence'])) {
-            // Utiliser la méthode select pour obtenir un joueur spécifique
-            $joueur = $joueurDAO->select('licence', $_GET['licence']);
-            echo json_encode($joueur);
-        } else {
-            // Utiliser la méthode selectAll pour obtenir tous les joueurs
-            $joueurs = $joueurDAO->selectAll();
-            echo json_encode($joueurs);
+        $critere = null;
+        $motcle = null;
+
+        if (isset($_POST['cle']) && isset($_POST['critere'])) {
+            $motcle = $_POST['cle'];
+            $critere = $_POST['critere'];
+            $recherche = new RechercheJoueur( $critere,$motcle);
+            $joueurs=$recherche->executer();
+            deliver_response(200, "Joueur trouvé", $joueur);
+        }
+
+        else {
+            // Utiliser ObtenirTousLesJoueurs.php
+            $joueurs = new ObtenirTousLesJoueurs();
+            $joueurs = $joueurs->executer();
+            deliver_response(200, "Liste des joueurs récupérée", $joueurs);
         }
         break;
 
     case 'POST':
-        // Créer un nouveau joueur
+        // Utiliser CreerJoueur.php
         $data = json_decode(file_get_contents('php://input'), true);
-        $joueur = new Joueur(
+        $creer = new CreerJoueur(
             $data['nom'],
             $data['prenom'],
             $data['date_naissance'],
@@ -36,38 +46,46 @@ switch($method) {
             $data['poids'],
             $data['licence']
         );
-        $result = $joueurDAO->insert($joueur);
-        echo json_encode(['success' => $result]);
+        $result = $creer->executer();
+        deliver_response(201, "Joueur créé avec succès", $result);
         break;
 
     case 'PUT':
         if(isset($_GET['licence'])) {
             $data = json_decode(file_get_contents('php://input'), true);
+
             if(isset($data['statut'])) {
-                // Mettre à jour le statut du joueur
-                $result = $joueurDAO->udpateSatut($_GET['licence'], $data['statut']);
+                // Utiliser ModifierStatutJoueur.php
+                $modifierStatut = new ModifierStatutJoueur($_GET['licence'], $data['statut']);
+                $result = $modifierStatut->executer();
+                deliver_response(200, "Statut du joueur modifié", $result);
             } else {
-                // Mettre à jour les informations du joueur
-                $joueur = new Joueur(
+                // Utiliser ModifieJoueur.php
+                $modifier = new ModifieJoueur(
+                    $_GET['licence'],
                     $data['nom'],
                     $data['prenom'],
                     $data['date_naissance'],
                     $data['taille'],
-                    $data['poids'],
-                    $_GET['licence']
+                    $data['poids']
                 );
-                $result = $joueurDAO->update($joueur);
+                $result = $modifier->executer();
+                deliver_response(200, "Joueur modifié avec succès", $result);
             }
-            echo json_encode(['success' => $result]);
         }
         break;
 
     case 'DELETE':
-        // Supprimer un joueur
         if(isset($_GET['licence'])) {
-            $result = $joueurDAO->delete($_GET['licence']);
-            echo json_encode(['success' => $result]);
+            // Utiliser SupprimerJoueur.php
+            $supprimer = new SupprimerJoueur();
+            $result = $supprimer->executer($_GET['licence']);
+            deliver_response(200, "Joueur supprimé avec succès", $result);
         }
+        break;
+
+    default:
+        deliver_response(405, "Méthode non autorisée", null);
         break;
 }
 ?>
