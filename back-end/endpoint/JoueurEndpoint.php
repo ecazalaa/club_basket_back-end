@@ -3,7 +3,9 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-require_once '../endpoint/response.php';
+
+require_once 'check_auth.php';
+require_once 'response.php';
 require_once '../controleur/JoueurControleur/ObtenirTousLesJoueurs.php';
 require_once '../controleur/JoueurControleur/RechercheJoueur.php';
 require_once '../controleur/JoueurControleur/CreerJoueur.php';
@@ -12,6 +14,10 @@ require_once '../controleur/JoueurControleur/ModifieJoueur.php';
 require_once '../controleur/JoueurControleur/SupprimerJoueur.php';
 require_once '../modele/Joueur.php';
 
+
+// Vérification de l'authentification pour toutes les requêtes
+
+check_auth();
 
 $method = $_SERVER['REQUEST_METHOD'];
 // Gestion des requêtes OPTIONS pour CORS

@@ -2,17 +2,16 @@
 require_once 'jwt_utils.php';
 
 function check_auth() {
-    // Si c'est une requête GET, on autorise sans auth
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        return true;
-    }
-
     // Récupération du token
     $token = get_bearer_token();
+    echo "TOKEN:".$token;
+    echo "<pre>";
+    print_r($_SERVER);
+    echo "</pre>";
 
     if (!$token) {
         http_response_code(401);
-        deliver_response(401, "Unauthorized", ["error" => "Token manquant"]);
+        deliver_response(401, "Unauthorized", ["error" => "Token manquant".$token]);
         exit();
     }
 
@@ -24,21 +23,7 @@ function check_auth() {
         exit();
     }
 
-    // Décoder le payload pour récupérer les informations utilisateur
-    $tokenParts = explode('.', $token);
-    $payload = json_decode(base64_decode($tokenParts[1]), true);
-
-    // Vérification des permissions selon le rôle
-    $role = $payload['role'];
-    $method = $_SERVER['REQUEST_METHOD'];
-
-    if (!check_permissions($role, $method)) {
-        http_response_code(403);
-        deliver_response(403, "Forbidden", ["error" => "Permission refusée"]);
-        exit();
-    }
-
-    return $payload;
+    return true;
 }
 
 function check_permissions($role, $method) {
