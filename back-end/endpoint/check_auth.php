@@ -4,10 +4,7 @@ require_once 'jwt_utils.php';
 function check_auth() {
     // Récupération du token
     $token = get_bearer_token();
-    echo "TOKEN:".$token;
-    echo "<pre>";
-    print_r($_SERVER);
-    echo "</pre>";
+    
 
     if (!$token) {
         http_response_code(401);
