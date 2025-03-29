@@ -77,6 +77,18 @@ function get_bearer_token() {
                 return $matches[1];
         }
     }
+
+    // Vérification supplémentaire pour REDIRECT_HTTP_AUTHORIZATION
+    if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        $redirect_headers = trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+        if (preg_match('/Bearer\s(\S+)/', $redirect_headers, $matches)) {
+            if($matches[1]=='null')
+                return null;
+            else
+                return $matches[1];
+        }
+    }
+
     return null;
 }
 
