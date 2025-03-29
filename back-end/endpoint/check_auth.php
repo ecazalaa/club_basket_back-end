@@ -5,6 +5,10 @@ function check_auth() {
     // Récupération du token
     $token = get_bearer_token();
     
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
 
     if (!$token) {
         http_response_code(401);
