@@ -12,6 +12,7 @@ require_once '../controleur/MatchControleur/CreerMatch.php';
 require_once '../controleur/MatchControleur/ModifierMatch.php';
 require_once '../controleur/MatchControleur/ModifierResultatMatch.php';
 require_once '../controleur/MatchControleur/SupprimerMatch.php';
+require_once '../controleur/ParticipationControleur/SupprimerParticipationIdMatch.php';
 require_once '../modele/MatchBasket.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -148,6 +149,8 @@ switch($method) {
         if (empty($match)) {
             deliver_response(404, "Match non trouvé", null);
         } else {
+            $suppressionParticipation = new SupprimerParticipationIdMatch($_GET['id']);
+            $suppressionParticipation->executer();
             $supprimer = new SupprimerMatch();
             $result = $supprimer->executer($_GET['id']);
             deliver_response(200, "Match supprimé avec succès", $result);
