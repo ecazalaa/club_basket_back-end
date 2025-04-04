@@ -1,0 +1,296 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Club Basket Labège API",
+        "description": "API du Club de Basket de Labège",
+        "contact": {
+            "email": "contact@clubbasketlabege.fr"
+        },
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/club_basket_back-end/back-end",
+            "description": "Serveur local"
+        }
+    ],
+    "paths": {
+        "/endpoint/JoueurEndpoint.php": {
+            "get": {
+                "tags": [
+                    "Joueurs"
+                ],
+                "summary": "Récupérer la liste des joueurs ou rechercher un joueur spécifique",
+                "parameters": [
+                    {
+                        "name": "critere",
+                        "in": "query",
+                        "description": "Critère de recherche (nom, prenom, licence, taille, poids)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "nom",
+                                "prenom",
+                                "licence",
+                                "taille",
+                                "poids"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cle",
+                        "in": "query",
+                        "description": "Valeur recherchée",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des joueurs ou joueur trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Joueur"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Paramètres invalides"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Joueurs"
+                ],
+                "summary": "Modifier un joueur existant",
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "query",
+                        "description": "Numéro de licence du joueur à modifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Joueur"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Joueur modifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Joueur modifié avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Données invalides"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "404": {
+                        "description": "Joueur non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Joueurs"
+                ],
+                "summary": "Créer un nouveau joueur",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Joueur"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Joueur créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Joueur créé avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Données invalides"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Joueurs"
+                ],
+                "summary": "Supprimer un joueur",
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "query",
+                        "description": "Numéro de licence du joueur à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Joueur supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Joueur supprimé avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Données invalides"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "404": {
+                        "description": "Joueur non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Joueur": {
+                "required": [
+                    "nom",
+                    "prenom",
+                    "date_naissance",
+                    "taille",
+                    "poids",
+                    "licence"
+                ],
+                "properties": {
+                    "nom": {
+                        "type": "string",
+                        "example": "Dupont"
+                    },
+                    "prenom": {
+                        "type": "string",
+                        "example": "Jean"
+                    },
+                    "date_naissance": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01"
+                    },
+                    "taille": {
+                        "type": "integer",
+                        "example": 180
+                    },
+                    "poids": {
+                        "type": "integer",
+                        "example": 75
+                    },
+                    "licence": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

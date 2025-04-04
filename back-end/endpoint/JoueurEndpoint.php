@@ -3,6 +3,115 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Get(
+ *     path="/endpoint/JoueurEndpoint.php",
+ *     summary="Récupérer la liste des joueurs ou rechercher un joueur spécifique",
+ *     tags={"Joueurs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="critere",
+ *         in="query",
+ *         description="Critère de recherche (nom, prenom, licence, taille, poids)",
+ *         required=false,
+ *         @OA\Schema(type="string", enum={"nom", "prenom", "licence", "taille", "poids"})
+ *     ),
+ *     @OA\Parameter(
+ *         name="cle",
+ *         in="query",
+ *         description="Valeur recherchée",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Liste des joueurs ou joueur trouvé",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Joueur"))
+ *         )
+ *     ),
+ *     @OA\Response(response=400, description="Paramètres invalides"),
+ *     @OA\Response(response=401, description="Non authentifié")
+ * )
+ * 
+ * @OA\Post(
+ *     path="/endpoint/JoueurEndpoint.php",
+ *     summary="Créer un nouveau joueur",
+ *     tags={"Joueurs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/Joueur")
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Joueur créé avec succès",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Joueur créé avec succès")
+ *         )
+ *     ),
+ *     @OA\Response(response=400, description="Données invalides"),
+ *     @OA\Response(response=401, description="Non authentifié")
+ * )
+ * 
+ * @OA\Put(
+ *     path="/endpoint/JoueurEndpoint.php",
+ *     summary="Modifier un joueur existant",
+ *     tags={"Joueurs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="licence",
+ *         in="query",
+ *         required=true,
+ *         description="Numéro de licence du joueur à modifier",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/Joueur")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Joueur modifié avec succès",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Joueur modifié avec succès")
+ *         )
+ *     ),
+ *     @OA\Response(response=400, description="Données invalides"),
+ *     @OA\Response(response=401, description="Non authentifié"),
+ *     @OA\Response(response=404, description="Joueur non trouvé")
+ * )
+ * 
+ * @OA\Delete(
+ *     path="/endpoint/JoueurEndpoint.php",
+ *     summary="Supprimer un joueur",
+ *     tags={"Joueurs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="licence",
+ *         in="query",
+ *         required=true,
+ *         description="Numéro de licence du joueur à supprimer",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Joueur supprimé avec succès",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Joueur supprimé avec succès")
+ *         )
+ *     ),
+ *     @OA\Response(response=400, description="Données invalides"),
+ *     @OA\Response(response=401, description="Non authentifié"),
+ *     @OA\Response(response=404, description="Joueur non trouvé")
+ * )
+ */
 
 require_once 'check_auth.php';
 require_once 'response.php';
@@ -13,6 +122,8 @@ require_once '../controleur/JoueurControleur/ModifierStatutJoueur.php';
 require_once '../controleur/JoueurControleur/ModifieJoueur.php';
 require_once '../controleur/JoueurControleur/SupprimerJoueur.php';
 require_once '../modele/Joueur.php';
+
+
 
 
 // Vérification de l'authentification pour toutes les requêtes
