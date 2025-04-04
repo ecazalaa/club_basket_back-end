@@ -5,7 +5,7 @@ function check_auth() {
     // Récupération du token
     $token = get_bearer_token();
     
-
+    
     if (!$token) {
         http_response_code(401);
         deliver_response(401, "Unauthorized", ["error" => "Token manquant".$token]);

@@ -8,7 +8,8 @@ class Participer{
     private $poste;
     private $note;
 
-    public function __construct($licence, $id_match, $tituRemp, $poste, $note){
+    //attention a note = null
+    public function __construct($licence, $id_match, $tituRemp, $poste, $note = null){
         $this->licence = $licence;
         $this->id_match = $id_match;
         $this->tituRemp = $tituRemp;
