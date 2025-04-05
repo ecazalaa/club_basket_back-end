@@ -26,7 +26,6 @@ function connectionBD(){
 }
 try {
     $pdo = connectionBD();
-    echo "Connexion réussie à la base de données.";
 } catch (Exception $e) {
     echo "Erreur de connexion à la base de données: " . $e->getMessage();
 }
