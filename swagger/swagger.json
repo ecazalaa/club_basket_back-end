@@ -12,6 +12,10 @@
         {
             "url": "http://localhost/club_basket_back-end/back-end",
             "description": "Serveur local"
+        },
+        {
+            "url": "http://localhost/club_basket_apiAuth",
+            "description": "Serveur d'authentification"
         }
     ],
     "paths": {
@@ -249,10 +253,114 @@
                     }
                 ]
             }
+        },
+        "/authapi.php": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Authentification utilisateur",
+                "description": "Permet d'obtenir un token JWT pour accéder aux autres endpoints",
+                "requestBody": {
+                    "description": "Identifiants de connexion",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginCredentials"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentification réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentification échouée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Identifiants invalides"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "LoginCredentials": {
+                "required": [
+                    "Nom",
+                    "Prenom",
+                    "Mot_de_passe"
+                ],
+                "properties": {
+                    "Nom": {
+                        "type": "string",
+                        "example": "Smith"
+                    },
+                    "Prenom": {
+                        "type": "string",
+                        "example": "Jane"
+                    },
+                    "Mot_de_passe": {
+                        "type": "string",
+                        "example": "mypassword"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginResponse": {
+                "properties": {
+                    "status_code": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "status_message": {
+                        "type": "string",
+                        "example": "OK"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "data": {
+                        "properties": {
+                            "jwt": {
+                                "type": "string",
+                                "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Bienvenue a l'API d'authentification de Romeo et Emile"
+                    }
+                },
+                "type": "object"
+            },
             "Joueur": {
                 "required": [
                     "nom",
@@ -290,6 +398,13 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     }
