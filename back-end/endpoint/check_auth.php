@@ -23,15 +23,4 @@ function check_auth() {
     return true;
 }
 
-function check_permissions($role, $method) {
-    switch ($role) {
-        case 'admin':
-            return true; // L'admin peut tout faire
-        case 'user':
-            // Le user peut créer (POST) et mettre à jour ses propres phrases (PUT)
-            return in_array($method, ['POST', 'PUT']);
-        default:
-            return false;
-    }
-}
 ?>
