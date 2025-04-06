@@ -7,8 +7,7 @@ use OpenApi\Attributes as OA;
  *     description="API de gestion pour le Club de Basket de Labège. Cette API permet de gérer les joueurs, les matchs et les statistiques.",
  *    
  *     @OA\Contact(
- *         name="Support API Labège",
- *         url="http://votresite.com/support",
+ *         name="Roméo Andriantsiferana et Emile Cazalaa",
  *         email="romeo.andriantsiferana@etu.iut-tlse3.fr"
  *     )
  * )
@@ -16,7 +15,7 @@ use OpenApi\Attributes as OA;
 
 /**
  * @OA\Server(
- *     description="Serveur local",
+ *     description="Serveur de gestion des joueurs, matchs et statistiques",
  *     url="https://clubbasketbackend.alwaysdata.net/back-end"
  * )
  */
@@ -47,7 +46,7 @@ use OpenApi\Attributes as OA;
  *     description="Opérations concernant les matchs"
  * )
  * @OA\Tag(
- *     name="Authentication",
+ *     name="Authentification",
  *     description="Opérations d'authentification"
  * )
  */

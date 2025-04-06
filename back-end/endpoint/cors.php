@@ -4,7 +4,8 @@
 $allowed_origins = [
     'https://editor.swagger.io',
     'https://clubbasketbackend.alwaysdata.net',
-    'https://apiauthclubbasket.alwaysdata.net'
+    'https://apiauthclubbasket.alwaysdata.net',
+    'https://clubbasketfrontend.alwaysdata.net'
 ];
 
 // Récupérer l'origine de la requête

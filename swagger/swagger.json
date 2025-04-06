@@ -4,8 +4,7 @@
         "title": "Club Basket Labège API",
         "description": "API de gestion pour le Club de Basket de Labège. Cette API permet de gérer les joueurs, les matchs et les statistiques.",
         "contact": {
-            "name": "Support API Labège",
-            "url": "http://votresite.com/support",
+            "name": "Roméo Andriantsiferana et Emile Cazalaa",
             "email": "romeo.andriantsiferana@etu.iut-tlse3.fr"
         },
         "version": "1.0.0"
@@ -13,7 +12,7 @@
     "servers": [
         {
             "url": "https://clubbasketbackend.alwaysdata.net/back-end",
-            "description": "Serveur local"
+            "description": "Serveur de gestion des joueurs, matchs et statistiques"
         },
         {
             "url": "https://apiauthclubbasket.alwaysdata.net/club_basket_apiAuth",
@@ -1184,7 +1183,7 @@
             "description": "Opérations concernant les matchs"
         },
         {
-            "name": "Authentication",
+            "name": "Authentification",
             "description": "Opérations d'authentification"
         }
     ]
