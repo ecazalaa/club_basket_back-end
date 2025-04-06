@@ -1,4 +1,163 @@
 <?php
+/**
+ * @OA\Tag(
+ *     name="Feuille de Match",
+ *     description="Opérations concernant les feuilles de match et les participations détaillées des joueurs"
+ * )
+ */
+
+/**
+ * @OA\Get(
+ *     path="/endpoint/FeuilleMatchEndpoint.php",
+ *     summary="Récupérer les participations d'un joueur",
+ *     tags={"Feuille de Match"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="licence",
+ *         in="query",
+ *         description="Numéro de licence du joueur",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         name="id_match",
+ *         in="query",
+ *         description="ID du match (optionnel, pour une participation spécifique)",
+ *         required=false,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Participation(s) trouvée(s)",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status_code", type="integer", example=200),
+ *             @OA\Property(property="status_message", type="string", example="Participation trouvée"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="licence", type="string", example="VT123456"),
+ *                     @OA\Property(property="id_match", type="integer", example=1),
+ *                     @OA\Property(property="tituRemp", type="string", example="T pour titulaire, R pour remplaçant"),
+ *                     @OA\Property(property="poste", type="string", example="Meneur"),
+ *                     @OA\Property(property="note", type="integer", example=8, nullable=true)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=404, description="Participation non trouvée"),
+ *     @OA\Response(response=400, description="Paramètres manquants")
+ * )
+ * 
+ * @OA\Post(
+ *     path="/endpoint/FeuilleMatchEndpoint.php",
+ *     summary="Créer une nouvelle participation à un match",
+ *     tags={"Feuille de Match"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"licence", "id_match", "tituRemp", "poste"},
+ *             @OA\Property(property="licence", type="string", example="VT123456"),
+ *             @OA\Property(property="id_match", type="integer", example=1),
+ *             @OA\Property(
+ *                 property="tituRemp",
+ *                 type="string",
+ *                 example="T",
+ *                 description="T pour titulaire, R pour remplaçant"
+ *             ),
+ *             @OA\Property(
+ *                 property="poste",
+ *                 type="string",
+ *                 example="Meneur",
+ *                 description="Poste du joueur dans le match"
+ *             ),
+ *             @OA\Property(property="note", type="integer", example=8, nullable=true)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Participation créée avec succès"
+ *     ),
+ *     @OA\Response(response=400, description="Données invalides ou incomplètes"),
+ *     @OA\Response(response=500, description="Erreur serveur lors de la création")
+ * )
+ * 
+ * @OA\Put(
+ *     path="/endpoint/FeuilleMatchEndpoint.php",
+ *     summary="Modifier une participation",
+ *     tags={"Feuille de Match"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="licence",
+ *         in="query",
+ *         required=true,
+ *         description="Numéro de licence du joueur",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         name="id_match",
+ *         in="query",
+ *         required=true,
+ *         description="ID du match",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             oneOf={
+ *                 @OA\Schema(
+ *                     required={"tituRemp", "poste"},
+ *                     @OA\Property(
+ *                         property="tituRemp",
+ *                         type="string",
+ *                         example="T",
+ *                         description="T pour titulaire, R pour remplaçant"
+ *                     ),
+ *                     @OA\Property(property="poste", type="string", example="Meneur"),
+ *                     @OA\Property(property="note", type="integer", nullable=true)
+ *                 ),
+ *                 @OA\Schema(
+ *                     required={"note"},
+ *                     @OA\Property(property="note", type="integer", example=8)
+ *                 )
+ *             }
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Participation mise à jour avec succès"),
+ *     @OA\Response(response=404, description="Participation non trouvée"),
+ *     @OA\Response(response=400, description="Données invalides ou incomplètes")
+ * )
+ * 
+ * @OA\Delete(
+ *     path="/endpoint/FeuilleMatchEndpoint.php",
+ *     summary="Supprimer une ou plusieurs participations",
+ *     tags={"Feuille de Match"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id_match",
+ *         in="query",
+ *         required=true,
+ *         description="ID du match",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="licence",
+ *         in="query",
+ *         required=false,
+ *         description="Numéro de licence du joueur (optionnel, si non fourni, supprime toutes les participations du match)",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Participation(s) supprimée(s) avec succès"
+ *     ),
+ *     @OA\Response(response=404, description="Participation(s) non trouvée(s)"),
+ *     @OA\Response(response=400, description="Paramètres manquants")
+ * )
+ */
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');

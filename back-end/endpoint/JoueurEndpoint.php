@@ -1,7 +1,5 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
 
 use OpenApi\Annotations as OA;
 
@@ -113,6 +111,7 @@ use OpenApi\Annotations as OA;
  * )
  */
 
+ require_once 'cors.php';
 require_once 'check_auth.php';
 require_once 'response.php';
 require_once '../controleur/JoueurControleur/ObtenirTousLesJoueurs.php';

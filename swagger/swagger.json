@@ -2,19 +2,21 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Club Basket Labège API",
-        "description": "API du Club de Basket de Labège",
+        "description": "API de gestion pour le Club de Basket de Labège. Cette API permet de gérer les joueurs, les matchs et les statistiques.",
         "contact": {
-            "email": "contact@clubbasketlabege.fr"
+            "name": "Support API Labège",
+            "url": "http://votresite.com/support",
+            "email": "romeo.andriantsiferana@etu.iut-tlse3.fr"
         },
-        "version": "0.1"
+        "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "http://localhost/club_basket_back-end/back-end",
+            "url": "https://clubbasketbackend.alwaysdata.net/back-end",
             "description": "Serveur local"
         },
         {
-            "url": "http://localhost/club_basket_apiAuth",
+            "url": "https://apiauthclubbasket.alwaysdata.net/club_basket_apiAuth",
             "description": "Serveur d'authentification"
         }
     ],
@@ -254,6 +256,758 @@
                 ]
             }
         },
+        "/endpoint/MatchEndpoint.php": {
+            "get": {
+                "tags": [
+                    "Matchs"
+                ],
+                "summary": "Récupérer les matchs",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type de matchs à récupérer (avenir/passe)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "avenir",
+                                "passe"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "critere",
+                        "in": "query",
+                        "description": "Critère de recherche",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "nom_adversaire",
+                                "lieu"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cle",
+                        "in": "query",
+                        "description": "Mot-clé pour la recherche",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Matchs trouvés avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status_message": {
+                                            "type": "string",
+                                            "example": "Liste des matchs récupérée"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "Id_Match": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "M_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2024-03-15"
+                                                    },
+                                                    "M_adversaire": {
+                                                        "type": "string",
+                                                        "example": "Toulouse Basket"
+                                                    },
+                                                    "M_lieu": {
+                                                        "type": "string",
+                                                        "example": "Labège"
+                                                    },
+                                                    "M_resultat": {
+                                                        "type": "string",
+                                                        "example": "85-80",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aucun match trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Matchs"
+                ],
+                "summary": "Modifier un match",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID du match à modifier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                    {
+                                        "properties": {
+                                            "date": {
+                                                "type": "string",
+                                                "format": "date"
+                                            },
+                                            "adversaire": {
+                                                "type": "string"
+                                            },
+                                            "lieu": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "resultat": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Match modifié avec succès"
+                    },
+                    "404": {
+                        "description": "Match non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Matchs"
+                ],
+                "summary": "Créer un nouveau match",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date",
+                                    "adversaire",
+                                    "lieu"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-03-15"
+                                    },
+                                    "adversaire": {
+                                        "type": "string",
+                                        "example": "Toulouse Basket"
+                                    },
+                                    "lieu": {
+                                        "type": "string",
+                                        "example": "Labège"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Match créé avec succès"
+                    },
+                    "400": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Matchs"
+                ],
+                "summary": "Supprimer un match",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID du match à supprimer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Match supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Match non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/endpoint/ParticipationEndpoint.php": {
+            "get": {
+                "tags": [
+                    "Participations"
+                ],
+                "summary": "Rechercher des participations",
+                "parameters": [
+                    {
+                        "name": "critere",
+                        "in": "query",
+                        "description": "Critère de recherche",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Id_Match",
+                                "Id_Joueur"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cle",
+                        "in": "query",
+                        "description": "Valeur du critère",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Participations trouvées",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status_message": {
+                                            "type": "string",
+                                            "example": "Participation trouvée"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "Id_Match": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "Id_Joueur": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "P_note": {
+                                                        "type": "integer",
+                                                        "example": 8,
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Participation non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Participations"
+                ],
+                "summary": "Modifier la note d'une participation",
+                "parameters": [
+                    {
+                        "name": "id_match",
+                        "in": "query",
+                        "description": "ID du match",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_joueur",
+                        "in": "query",
+                        "description": "ID du joueur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "note"
+                                ],
+                                "properties": {
+                                    "note": {
+                                        "type": "integer",
+                                        "example": 8
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Note modifiée avec succès"
+                    },
+                    "404": {
+                        "description": "Participation non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Participations"
+                ],
+                "summary": "Créer une nouvelle participation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_Match",
+                                    "Id_Joueur"
+                                ],
+                                "properties": {
+                                    "Id_Match": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_Joueur": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Participation créée avec succès"
+                    },
+                    "400": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Participations"
+                ],
+                "summary": "Supprimer une participation",
+                "parameters": [
+                    {
+                        "name": "id_match",
+                        "in": "query",
+                        "description": "ID du match",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_joueur",
+                        "in": "query",
+                        "description": "ID du joueur",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Participation supprimée avec succès"
+                    },
+                    "404": {
+                        "description": "Participation non trouvée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/endpoint/FeuilleMatchEndpoint.php": {
+            "get": {
+                "tags": [
+                    "Feuille de Match"
+                ],
+                "summary": "Récupérer les participations d'un joueur",
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "query",
+                        "description": "Numéro de licence du joueur",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id_match",
+                        "in": "query",
+                        "description": "ID du match (optionnel, pour une participation spécifique)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Participation(s) trouvée(s)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status_code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status_message": {
+                                            "type": "string",
+                                            "example": "Participation trouvée"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "licence": {
+                                                        "type": "string",
+                                                        "example": "VT123456"
+                                                    },
+                                                    "id_match": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "tituRemp": {
+                                                        "type": "string",
+                                                        "example": "T pour titulaire, R pour remplaçant"
+                                                    },
+                                                    "poste": {
+                                                        "type": "string",
+                                                        "example": "Meneur"
+                                                    },
+                                                    "note": {
+                                                        "type": "integer",
+                                                        "example": 8,
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Participation non trouvée"
+                    },
+                    "400": {
+                        "description": "Paramètres manquants"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Feuille de Match"
+                ],
+                "summary": "Modifier une participation",
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "query",
+                        "description": "Numéro de licence du joueur",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id_match",
+                        "in": "query",
+                        "description": "ID du match",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                    {
+                                        "required": [
+                                            "tituRemp",
+                                            "poste"
+                                        ],
+                                        "properties": {
+                                            "tituRemp": {
+                                                "description": "T pour titulaire, R pour remplaçant",
+                                                "type": "string",
+                                                "example": "T"
+                                            },
+                                            "poste": {
+                                                "type": "string",
+                                                "example": "Meneur"
+                                            },
+                                            "note": {
+                                                "type": "integer",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "required": [
+                                            "note"
+                                        ],
+                                        "properties": {
+                                            "note": {
+                                                "type": "integer",
+                                                "example": 8
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Participation mise à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Participation non trouvée"
+                    },
+                    "400": {
+                        "description": "Données invalides ou incomplètes"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Feuille de Match"
+                ],
+                "summary": "Créer une nouvelle participation à un match",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "licence",
+                                    "id_match",
+                                    "tituRemp",
+                                    "poste"
+                                ],
+                                "properties": {
+                                    "licence": {
+                                        "type": "string",
+                                        "example": "VT123456"
+                                    },
+                                    "id_match": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tituRemp": {
+                                        "description": "T pour titulaire, R pour remplaçant",
+                                        "type": "string",
+                                        "example": "T"
+                                    },
+                                    "poste": {
+                                        "description": "Poste du joueur dans le match",
+                                        "type": "string",
+                                        "example": "Meneur"
+                                    },
+                                    "note": {
+                                        "type": "integer",
+                                        "example": 8,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Participation créée avec succès"
+                    },
+                    "400": {
+                        "description": "Données invalides ou incomplètes"
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la création"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Feuille de Match"
+                ],
+                "summary": "Supprimer une ou plusieurs participations",
+                "parameters": [
+                    {
+                        "name": "id_match",
+                        "in": "query",
+                        "description": "ID du match",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "licence",
+                        "in": "query",
+                        "description": "Numéro de licence du joueur (optionnel, si non fourni, supprime toutes les participations du match)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Participation(s) supprimée(s) avec succès"
+                    },
+                    "404": {
+                        "description": "Participation(s) non trouvée(s)"
+                    },
+                    "400": {
+                        "description": "Paramètres manquants"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/authapi.php": {
             "post": {
                 "tags": [
@@ -309,6 +1063,44 @@
     },
     "components": {
         "schemas": {
+            "Joueur": {
+                "required": [
+                    "nom",
+                    "prenom",
+                    "date_naissance",
+                    "taille",
+                    "poids",
+                    "licence"
+                ],
+                "properties": {
+                    "nom": {
+                        "type": "string",
+                        "example": "Dupont"
+                    },
+                    "prenom": {
+                        "type": "string",
+                        "example": "Jean"
+                    },
+                    "date_naissance": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01"
+                    },
+                    "taille": {
+                        "type": "integer",
+                        "example": 180
+                    },
+                    "poids": {
+                        "type": "integer",
+                        "example": 75
+                    },
+                    "licence": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                },
+                "type": "object"
+            },
             "LoginCredentials": {
                 "required": [
                     "Nom",
@@ -360,44 +1152,6 @@
                     }
                 },
                 "type": "object"
-            },
-            "Joueur": {
-                "required": [
-                    "nom",
-                    "prenom",
-                    "date_naissance",
-                    "taille",
-                    "poids",
-                    "licence"
-                ],
-                "properties": {
-                    "nom": {
-                        "type": "string",
-                        "example": "Dupont"
-                    },
-                    "prenom": {
-                        "type": "string",
-                        "example": "Jean"
-                    },
-                    "date_naissance": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2000-01-01"
-                    },
-                    "taille": {
-                        "type": "integer",
-                        "example": 180
-                    },
-                    "poids": {
-                        "type": "integer",
-                        "example": 75
-                    },
-                    "licence": {
-                        "type": "string",
-                        "example": "123456"
-                    }
-                },
-                "type": "object"
             }
         },
         "securitySchemes": {
@@ -407,5 +1161,31 @@
                 "scheme": "bearer"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Feuille de Match",
+            "description": "Opérations concernant les feuilles de match et les participations détaillées des joueurs"
+        },
+        {
+            "name": "Matchs",
+            "description": "Opérations concernant les matchs de basket"
+        },
+        {
+            "name": "Participations",
+            "description": "Opérations concernant les participations des joueurs aux matchs"
+        },
+        {
+            "name": "Joueurs",
+            "description": "Opérations concernant les joueurs"
+        },
+        {
+            "name": "Matchs",
+            "description": "Opérations concernant les matchs"
+        },
+        {
+            "name": "Authentication",
+            "description": "Opérations d'authentification"
+        }
+    ]
 }

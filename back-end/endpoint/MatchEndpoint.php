@@ -1,8 +1,130 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+/**
+ * @OA\Tag(
+ *     name="Matchs",
+ *     description="Opérations concernant les matchs de basket"
+ * )
+ */
 
+/**
+ * @OA\Get(
+ *     path="/endpoint/MatchEndpoint.php",
+ *     summary="Récupérer les matchs",
+ *     tags={"Matchs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="type",
+ *         in="query",
+ *         description="Type de matchs à récupérer (avenir/passe)",
+ *         required=true,
+ *         @OA\Schema(type="string", enum={"avenir", "passe"})
+ *     ),
+ *     @OA\Parameter(
+ *         name="critere",
+ *         in="query",
+ *         description="Critère de recherche",
+ *         required=true,
+ *         @OA\Schema(type="string", enum={"nom_adversaire", "lieu"})
+ *     ),
+ *     @OA\Parameter(
+ *         name="cle",
+ *         in="query",
+ *         description="Mot-clé pour la recherche",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Matchs trouvés avec succès",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status_code", type="integer", example=200),
+ *             @OA\Property(property="status_message", type="string", example="Liste des matchs récupérée"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="Id_Match", type="integer", example=1),
+ *                     @OA\Property(property="M_date", type="string", format="date", example="2024-03-15"),
+ *                     @OA\Property(property="M_adversaire", type="string", example="Toulouse Basket"),
+ *                     @OA\Property(property="M_lieu", type="string", example="Labège"),
+ *                     @OA\Property(property="M_resultat", type="string", example="85-80", nullable=true)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=404, description="Aucun match trouvé")
+ * )
+ * 
+ * @OA\Post(
+ *     path="/endpoint/MatchEndpoint.php",
+ *     summary="Créer un nouveau match",
+ *     tags={"Matchs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"date", "adversaire", "lieu"},
+ *             @OA\Property(property="date", type="string", format="date", example="2024-03-15"),
+ *             @OA\Property(property="adversaire", type="string", example="Toulouse Basket"),
+ *             @OA\Property(property="lieu", type="string", example="Labège")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Match créé avec succès"
+ *     ),
+ *     @OA\Response(response=400, description="Données invalides")
+ * )
+ * 
+ * @OA\Put(
+ *     path="/endpoint/MatchEndpoint.php",
+ *     summary="Modifier un match",
+ *     tags={"Matchs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="query",
+ *         required=true,
+ *         description="ID du match à modifier",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             oneOf={
+ *                 @OA\Schema(
+ *                     @OA\Property(property="date", type="string", format="date"),
+ *                     @OA\Property(property="adversaire", type="string"),
+ *                     @OA\Property(property="lieu", type="string")
+ *                 ),
+ *                 @OA\Schema(
+ *                     @OA\Property(property="resultat", type="string")
+ *                 )
+ *             }
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Match modifié avec succès"),
+ *     @OA\Response(response=404, description="Match non trouvé")
+ * )
+ * 
+ * @OA\Delete(
+ *     path="/endpoint/MatchEndpoint.php",
+ *     summary="Supprimer un match",
+ *     tags={"Matchs"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="query",
+ *         required=true,
+ *         description="ID du match à supprimer",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Match supprimé avec succès"),
+ *     @OA\Response(response=404, description="Match non trouvé")
+ * )
+ */
+
+require_once 'cors.php';
 require_once 'check_auth.php';
 require_once 'response.php';
 require_once '../controleur/MatchControleur/ObtenirTousLesMatchsAVenir.php';
