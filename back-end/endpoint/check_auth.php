@@ -1,4 +1,5 @@
 <?php
+require_once 'cors.php';
 require_once 'jwt_utils.php';
 
 function check_auth() {

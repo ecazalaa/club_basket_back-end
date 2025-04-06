@@ -1,8 +1,127 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+/**
+ * @OA\Tag(
+ *     name="Participations",
+ *     description="Opérations concernant les participations des joueurs aux matchs"
+ * )
+ */
 
+/**
+ * @OA\Get(
+ *     path="/endpoint/ParticipationEndpoint.php",
+ *     summary="Rechercher des participations",
+ *     tags={"Participations"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="critere",
+ *         in="query",
+ *         description="Critère de recherche",
+ *         required=true,
+ *         @OA\Schema(type="string", enum={"Id_Match", "Id_Joueur"})
+ *     ),
+ *     @OA\Parameter(
+ *         name="cle",
+ *         in="query",
+ *         description="Valeur du critère",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Participations trouvées",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status_code", type="integer", example=200),
+ *             @OA\Property(property="status_message", type="string", example="Participation trouvée"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="Id_Match", type="integer", example=1),
+ *                     @OA\Property(property="Id_Joueur", type="integer", example=1),
+ *                     @OA\Property(property="P_note", type="integer", example=8, nullable=true)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=404, description="Participation non trouvée")
+ * )
+ * 
+ * @OA\Post(
+ *     path="/endpoint/ParticipationEndpoint.php",
+ *     summary="Créer une nouvelle participation",
+ *     tags={"Participations"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"Id_Match", "Id_Joueur"},
+ *             @OA\Property(property="Id_Match", type="integer", example=1),
+ *             @OA\Property(property="Id_Joueur", type="integer", example=1)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Participation créée avec succès"
+ *     ),
+ *     @OA\Response(response=400, description="Données invalides")
+ * )
+ * 
+ * @OA\Put(
+ *     path="/endpoint/ParticipationEndpoint.php",
+ *     summary="Modifier la note d'une participation",
+ *     tags={"Participations"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id_match",
+ *         in="query",
+ *         required=true,
+ *         description="ID du match",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="id_joueur",
+ *         in="query",
+ *         required=true,
+ *         description="ID du joueur",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"note"},
+ *             @OA\Property(property="note", type="integer", example=8)
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Note modifiée avec succès"),
+ *     @OA\Response(response=404, description="Participation non trouvée")
+ * )
+ * 
+ * @OA\Delete(
+ *     path="/endpoint/ParticipationEndpoint.php",
+ *     summary="Supprimer une participation",
+ *     tags={"Participations"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id_match",
+ *         in="query",
+ *         required=true,
+ *         description="ID du match",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="id_joueur",
+ *         in="query",
+ *         required=true,
+ *         description="ID du joueur",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Participation supprimée avec succès"),
+ *     @OA\Response(response=404, description="Participation non trouvée")
+ * )
+ */
+
+require_once 'cors.php';
 require_once 'check_auth.php';
 require_once 'response.php';
 require_once '../controleur/ParticipationControleur/CreerParticipation.php';
